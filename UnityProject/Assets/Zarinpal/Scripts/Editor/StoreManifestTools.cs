@@ -26,28 +26,16 @@ namespace ZarinpalIAB.Editor
 	public class StoreManifestTools : IManifestTools
     {
 #if UNITY_EDITOR
-		static StoreManifestTools instance = new StoreManifestTools();
-        private static IABConfig setting;
+		public static StoreManifestTools Instance = new StoreManifestTools();
+		private static IABConfig setting;
 
-        static StoreManifestTools()
+		public void ClearManifest()
 		{
-			IABManifestTools.ManTools.Add(instance);
-		}
-
-		public void ClearManifest(){
 			RemoveZarinpalBPFromManifest();
-        }
-		public void UpdateManifest() {
-			HandleZarinpalBPManifest ();
-        }
-
-		public void HandleZarinpalBPManifest()
+		}
+		public void UpdateManifest()
 		{
-			if (StoreSettings.Enable) {
-				AddZarinpalBPToManifest();
-			} else {
-				RemoveZarinpalBPFromManifest();
-			}
+			AddZarinpalBPToManifest();
 		}
 
 		private void AddZarinpalBPToManifest()
@@ -113,7 +101,7 @@ namespace ZarinpalIAB.Editor
             get
             {
                 if(setting==null)
-                    setting = AssetDatabase.LoadAssetAtPath<IABConfig>("Assets/Zarinpal/Resources/IABSetting.asset");
+                    setting = AssetDatabase.LoadAssetAtPath<IABConfig>("Assets/Zarinpal/Resources/ZarrinpalIABSetting.asset");
                 return setting;
             }
         }

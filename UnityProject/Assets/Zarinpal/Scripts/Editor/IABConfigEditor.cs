@@ -14,20 +14,22 @@ namespace ZarinpalIAB.Editor
         private bool _mFoldoutIOS;
         private bool _mFoldoutZarinpal;
 
+        private SerializedProperty CallbackurlProperty;
+
         public override void OnInspectorGUI()
         {
             var changed = false;
             var color = GUI.color;
-            var enable = serializedObject.FindProperty("m_enable");
+            var enable = serializedObject.FindProperty("Enable");
 
-            var merchantIDProp = serializedObject.FindProperty("_merchantID");
-            var autoVerifyProp = serializedObject.FindProperty("_autoVerifyPurchase");
-            var _schemeProp = serializedObject.FindProperty("_scheme");
-            var _hostProp = serializedObject.FindProperty("_host");
-            var _useCallbackProp = serializedObject.FindProperty("_useSchemeAndHostAsCallbackUrl");
-            var _callbackProp = serializedObject.FindProperty("_calbackUrl");
-            var _autoStartPurchaseProp = serializedObject.FindProperty("_autoStartPurchase");
-            var logEnabledProp = serializedObject.FindProperty("_logEnabled");
+            var merchantIDProp = serializedObject.FindProperty("MerchantID");
+            var autoVerifyProp = serializedObject.FindProperty("AutoVerifyPurchase");
+            var _schemeProp = serializedObject.FindProperty("Scheme");
+            var _hostProp = serializedObject.FindProperty("Host");
+            var _useCallbackProp = serializedObject.FindProperty("UseSchemeAndHostAsCallbackUrl");
+            CallbackurlProperty = serializedObject.FindProperty("CallbackUrl");
+            var _autoStartPurchaseProp = serializedObject.FindProperty("AutoStartPurchase");
+            var logEnabledProp = serializedObject.FindProperty("LogEnabled");
 
 
             EditorGUILayout.LabelField("Zarinpal Setting");
@@ -73,11 +75,11 @@ namespace ZarinpalIAB.Editor
             EditorGUILayout.PropertyField(_useCallbackProp);
             if (_useCallbackProp.boolValue)
             {
-                _callbackProp.stringValue =
+                CallbackurlProperty.stringValue =
                     string.Format("{0}://{1}", _schemeProp.stringValue, _hostProp.stringValue);
             }
 
-            EditorGUILayout.PropertyField(_callbackProp);
+            EditorGUILayout.PropertyField(CallbackurlProperty);
             changed = changed | EditorGUI.EndChangeCheck();
             EditorGUI.indentLevel--;
 
@@ -106,21 +108,7 @@ namespace ZarinpalIAB.Editor
 
             if (GUILayout.Button("Update Manifest & Files"))
             {
-                var pluginDirectoryAndroid = Path.Combine(Application.dataPath, "Plugins/Android");
-                if (!Directory.Exists(pluginDirectoryAndroid))
-                {
-                    Directory.CreateDirectory(pluginDirectoryAndroid);
-                }
-
-                var pluginDirectoryIOS = Path.Combine(Application.dataPath, "Plugins/IOS");
-                if (!Directory.Exists(pluginDirectoryIOS))
-                {
-                    Directory.CreateDirectory(pluginDirectoryIOS);
-                }
-
-                handleZarinpalJars(!enable.boolValue);
-                IABManifestTools.GenerateManifest();
-                AssetDatabase.Refresh();
+                applySettings(!enable.boolValue, !enable.boolValue, enable.boolValue);
                 m_changed = false;
             }
 
@@ -137,6 +125,79 @@ namespace ZarinpalIAB.Editor
             }
         }
 
+        private void applySettings(bool removeAndroidLibs, bool removeIosLibs, bool addZarrinpalToManifest = true)
+        {
+            var pluginDirectoryAndroid = Path.Combine(Application.dataPath, "Plugins/Android");
+            if (!Directory.Exists(pluginDirectoryAndroid))
+            {
+                Directory.CreateDirectory(pluginDirectoryAndroid);
+            }
+
+            var pluginDirectoryIOS = Path.Combine(Application.dataPath, "Plugins/IOS");
+            if (!Directory.Exists(pluginDirectoryIOS))
+            {
+                Directory.CreateDirectory(pluginDirectoryIOS);
+            }
+
+            handleZarinpalJars(removeAndroidLibs);
+            handleZarinpalIOS(removeIosLibs);
+
+            if (addZarrinpalToManifest)
+            {
+                IABManifestTools.GenerateManifest();
+            }
+            else
+            {
+                IABManifestTools.RemoveZarrinpalFromManifest();
+            }
+
+            AssetDatabase.Refresh();
+        }
+
+
+        public static void SetCallback(bool useWebCallback, string webCallback = "")
+        {
+            var settings = Resources.Load<IABConfig>("ZarrinpalIABSetting");
+
+            if (useWebCallback)
+            {
+                settings.CallbackUrl = webCallback;
+            }
+            else
+            {
+                settings.CallbackUrl = string.Format("{0}://{1}", settings.Scheme, settings.Host);
+            }
+        }
+
+        public static void ApplySettings(bool removeAndroidLibs, bool removeIosLibs, bool addZarrinpalToManifest = true)
+        {
+            var pluginDirectoryAndroid = Path.Combine(Application.dataPath, "Plugins/Android");
+            if (!Directory.Exists(pluginDirectoryAndroid))
+            {
+                Directory.CreateDirectory(pluginDirectoryAndroid);
+            }
+
+            var pluginDirectoryIOS = Path.Combine(Application.dataPath, "Plugins/IOS");
+            if (!Directory.Exists(pluginDirectoryIOS))
+            {
+                Directory.CreateDirectory(pluginDirectoryIOS);
+            }
+
+            handleZarinpalJars(removeAndroidLibs);
+            handleZarinpalIOS(removeIosLibs);
+
+            if (addZarrinpalToManifest)
+            {
+                IABManifestTools.GenerateManifest();
+            }
+            else
+            {
+                IABManifestTools.RemoveZarrinpalFromManifest();
+            }
+
+            AssetDatabase.Refresh();
+        }
+
 
         private void ApplyRadioButtonBehaviour(SerializedProperty checkProp, List<SerializedProperty> uncheckProps)
         {
@@ -150,7 +211,7 @@ namespace ZarinpalIAB.Editor
         }
 
 
-        static void handleZarinpalJars(bool remove)
+        public static void handleZarinpalJars(bool remove)
         {
             try
             {
@@ -191,7 +252,7 @@ namespace ZarinpalIAB.Editor
 
 
 
-        static void handleZarinpalIOS(bool remove)
+        public static void handleZarinpalIOS(bool remove)
         {
             try
             {
@@ -243,7 +304,7 @@ namespace ZarinpalIAB.Editor
                 {
 
                     string bpRootPath = Application.dataPath +
-                                        "/UnityIAPStoreExtension/Templates/IOS/";
+                                        "/Zarinpal/Templates/IOS/";
 
                     FileUtil.CopyFileOrDirectory(bpRootPath + "HttpRequest.swift",
                         Application.dataPath + "/Plugins/IOS/HttpRequest.swift");
@@ -279,7 +340,7 @@ namespace ZarinpalIAB.Editor
         [MenuItem("Zarinpal/Setting")]
         static void ShowConfig()
         {
-            string path = "Assets/Zarinpal/Resources/IABSetting.asset";
+            string path = "Assets/Zarinpal/Resources/ZarrinpalIABSetting.asset";
             var config = AssetDatabase.LoadAssetAtPath<IABConfig>(path);
             if (config == null)
             {

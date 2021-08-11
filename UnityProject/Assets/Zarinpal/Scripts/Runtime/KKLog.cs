@@ -15,7 +15,7 @@ namespace ZarinpalIAB
             {
                 if (_config == null && !_configCheckd)
                 {
-                    _config = Resources.Load<IABConfig>("IABSetting");
+                    _config = Resources.Load<IABConfig>("ZarrinpalIABSetting");
                     _configCheckd = true;
                 }
 

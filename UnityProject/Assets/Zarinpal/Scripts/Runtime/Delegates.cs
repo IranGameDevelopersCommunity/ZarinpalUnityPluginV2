@@ -14,11 +14,11 @@ namespace ZarinpalIAB
     
     public delegate void PurchaseFailedToStartDelegate(string error);
 
-    public delegate void QueryInventorySucceededDelegate(List<Purchase> purchases, List<SkuInfo> skuInfos);
+    public delegate void QueryInventorySucceededDelegate(List<Purchase> purchases, List<ZarrinpalSkuInfo> skuInfos);
 
     public delegate void QueryInventoryFailedDelegate(string error);
 
-    public delegate void QuerySkuDetailsSucceededDelegate(List<SkuInfo> skuInfos);
+    public delegate void QuerySkuDetailsSucceededDelegate(List<ZarrinpalSkuInfo> skuInfos);
 
     public delegate void QuerySkuDetailsFailedDelegate(string error);
 

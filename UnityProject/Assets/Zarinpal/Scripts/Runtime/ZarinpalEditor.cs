@@ -47,6 +47,11 @@ namespace ZarinpalIAB
             }
         }
 
+        public void PaymentRequestWihtoutPanel(long amount, string productId, string desc, string email, string mobile)
+        {
+            throw new NotImplementedException();
+        }
+
         public void StartPay(string authority)
         {
 

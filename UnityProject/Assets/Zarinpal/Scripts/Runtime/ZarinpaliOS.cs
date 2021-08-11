@@ -73,6 +73,11 @@ namespace ZarinpalIAB
 			_zu_startPurchase((int) amount, productID, desc);
 		}
 
+		public void PaymentRequestWihtoutPanel(long amount, string productId, string desc, string email, string mobile)
+		{
+			throw new NotImplementedException();
+		}
+
 		public void StartPay(string authority)
 		{
 			_zu_openPaymentGateway(authority);
@@ -237,7 +242,7 @@ namespace ZarinpalIAB
 		[DllImport("__Internal")]
 		private static extern void _zu_verifyPurchase(string authority,int amount);
 
-    #endregion
-	}
+        #endregion
+    }
 #endif
 }

@@ -65,7 +65,7 @@ public class ZarinpalExample : MonoBehaviour
         LogMessage("Payment Verification Failed ." + error);
     }
 
-    private void Zarinpal_QuerySkuDetailsSucceeded(List<SkuInfo> products)
+    private void Zarinpal_QuerySkuDetailsSucceeded(List<ZarrinpalSkuInfo> products)
     {
         LogMessage("Query Sku Details Succeeded . number of products " + products.Count);
     }

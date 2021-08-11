@@ -15,7 +15,7 @@ namespace ZarinpalIAB
             }
         }
 
-        public void QuerySkuDetail(string[] skus, Action<List<SkuInfo>> succeedAction, Action<string> failedAction)
+        public void QuerySkuDetail(string[] skus, Action<List<ZarrinpalSkuInfo>> succeedAction, Action<string> failedAction)
         {
             var productsSetting = Resources.Load<ZarinpalProductSetting>("ZarinpalProductSetting");
             if (succeedAction != null)

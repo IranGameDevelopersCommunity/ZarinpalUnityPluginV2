@@ -59,6 +59,15 @@ namespace ZarinpalIAB
             _zarinpalJavaClass.CallStatic("startPurchaseFlow", amount, productID, desc);
         }
 
+        public void PaymentRequestWihtoutPanel(long amount, string productId, string desc, string email, string mobile)
+        {
+            m_purchaseOpen = true;
+            m_authority = null;
+            m_productID = productId;
+            m_refID = null;
+            _zarinpalJavaClass.CallStatic("startPurchaseFlowWithoutPanel", amount, desc, email, mobile);
+        }
+
         public void StartPay(string authority)
         {
             _zarinpalJavaClass.CallStatic("startPurchaseActivity");

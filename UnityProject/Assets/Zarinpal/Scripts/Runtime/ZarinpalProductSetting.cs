@@ -7,7 +7,7 @@ namespace ZarinpalIAB
     [CreateAssetMenu]
     public class ZarinpalProductSetting : ScriptableObject
     {
-        public List<SkuInfo> ProductsDescriptions;
+        public List<ZarrinpalSkuInfo> ProductsDescriptions;
     }
 }
 

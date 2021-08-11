@@ -17,6 +17,8 @@ namespace ZarinpalIAB
 
         void PaymentRequest(long amount, string desc, string productID);
 
+        void PaymentRequestWihtoutPanel(long amount, string productId, string desc, string email, string mobile);
+
         void StartPay(string authority);
         
         void VerifyPayment(string authority,int amount);

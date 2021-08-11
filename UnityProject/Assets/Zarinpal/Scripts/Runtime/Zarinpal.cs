@@ -13,7 +13,7 @@ namespace ZarinpalIAB
         
         private static IZarinpalPlatform _platform;
 
-        private static List<SkuInfo> _products;
+        private static List<ZarrinpalSkuInfo> _products;
 
         private static string _cachedAuthority;
         
@@ -22,9 +22,9 @@ namespace ZarinpalIAB
             get { return _platform; }
         }
 
-        public event Action<List<Purchase>, List<SkuInfo>> QueryInventorySucceeded;
+        public event Action<List<Purchase>, List<ZarrinpalSkuInfo>> QueryInventorySucceeded;
         public event Action<string> QueryInventoryFailed;
-        public static event Action<List<SkuInfo>> QuerySkuDetailsSucceeded;
+        public static event Action<List<ZarrinpalSkuInfo>> QuerySkuDetailsSucceeded;
         public static event Action<string> QuerySkuDetailsFailed;
         public static event Action<List<Purchase>> QueryPurchasesSucceeded;
         public static event Action<string> QueryPurchasesFailed;
@@ -183,7 +183,7 @@ namespace ZarinpalIAB
                 return;
             }
 
-            var setting = Resources.Load<IABConfig>("IABSetting");
+            var setting = Resources.Load<IABConfig>("ZarrinpalIABSetting");
 
             if (setting == null)
             {
@@ -277,7 +277,7 @@ namespace ZarinpalIAB
             }
         }
 
-        public static void PaymentRequest(string productID)
+        public static void PaymentRequest(string productID, bool enablePanel = true, string email = null, string mobile = null)
         {
             if (_products != null)
             {
@@ -287,7 +287,7 @@ namespace ZarinpalIAB
                     int price;
                     if (int.TryParse(product.Price, out price))
                     {
-                        PaymentRequest(price, product.Description, productID);
+                        PaymentRequest(price, product.Description, productID, enablePanel, email, mobile);
                     }
                     else
                     {
@@ -312,7 +312,7 @@ namespace ZarinpalIAB
         /// <param name="amount">your product/service price in toman</param>
         /// <param name="desc">payment description.please note it can not be null or empty</param>
         /// <param name="productID">the id of product you are purchasing</param>
-        private static void PaymentRequest(long amount, string desc, string productID = "na")
+        private static void PaymentRequest(long amount, string desc, string productID = "na", bool enablePanel = true, string email = null, string mobile = null)
         {
             if (amount < 1000)
             {
@@ -345,7 +345,14 @@ namespace ZarinpalIAB
                 productID = "unknown product";
             }
 
-            _platform.PaymentRequest(amount, desc, productID);
+            if (enablePanel)
+            {
+                _platform.PaymentRequest(amount, desc, productID);
+            }
+            else
+            {
+                _platform.PaymentRequestWihtoutPanel(amount, desc, productID, email, mobile);
+            }
         }
 
         public static void StartPay(string authority)
@@ -460,7 +467,7 @@ namespace ZarinpalIAB
             if (handler != null) handler(error);
         }
 
-        protected static void OnQuerySkuDetailsSucceeded(List<SkuInfo> skuinfos)
+        protected static void OnQuerySkuDetailsSucceeded(List<ZarrinpalSkuInfo> skuinfos)
         {
             _products = skuinfos;
             var handler = QuerySkuDetailsSucceeded;

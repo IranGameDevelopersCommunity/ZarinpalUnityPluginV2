@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 34f39f22b879d4cfc83dac114d8c4f97, type: 3}
-  m_Name: IABSetting
+  m_Name: ZarrinpalIABSetting
   m_EditorClassIdentifier: 
-  m_enable: 1
-  _merchantID: YOUR_MERCHANT_ID
-  _autoStartPurchase: 1
-  _autoVerifyPurchase: 1
-  _scheme: YOUR_SCHEME
-  _host: zarinpalpayment
-  _calbackUrl: YOUR_SCHEME://zarinpalpayment
-  _useSchemeAndHostAsCallbackUrl: 1
-  _logEnabled: 0
+  Enable: 1
+  MerchantID: etyty
+  AutoStartPurchase: 1
+  AutoVerifyPurchase: 1
+  Scheme: return
+  Host: zarinpalpayment
+  CallbackUrl: return://zarinpalpayment
+  UseSchemeAndHostAsCallbackUrl: 0
+  LogEnabled: 1
